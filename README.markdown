@@ -14,6 +14,6 @@ Enjoy,
 Ken Rimple
 Dir. Education Services
 Chariot Solutions
-(Chariot Education Home)[http://chariotsolutions.com/education]
+Chariot Education Home[http://chariotsolutions.com/education]
 
 
