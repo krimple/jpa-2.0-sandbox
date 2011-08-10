@@ -1,0 +1,3 @@
+// Spring Roo 1.2.0.BUILD-SNAPSHOT [rev 89f9713] log opened at 2011-08-10 12:19:43
+project --topLevelPackage com.chariot.jpademo --projectName jpademo
+persistence setup --database HYPERSONIC_PERSISTENT --provider HIBERNATE 

@@ -1,0 +1,6 @@
+target
+*.iws
+*.ipj
+*.iml
+jpademo.*
+
