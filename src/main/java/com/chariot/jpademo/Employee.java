@@ -1,13 +1,36 @@
 package com.chariot.jpademo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Employee {
 
-  @Id
+  @OneToMany(mappedBy = "employee",
+          cascade = {CascadeType.PERSIST/*, CascadeType.REMOVE*/})
+  private Set<Review> reviews = new HashSet<Review>();
+
+  public void addReview(Review r) {
+      r.setEmployee(this);
+      reviews.add(r);
+  }
+
+    public void removeReview(Review r) {
+        reviews.remove(r);
+    }
+    
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    @Id
   @GeneratedValue
   private Long id;
 

@@ -2,8 +2,11 @@ package com.chariot.jpademo;
 
 import org.hamcrest.core.IsNot;
 import org.hamcrest.core.IsNull;
+import org.hamcrest.core.IsEqual;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,28 +24,44 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations =
         "classpath:META-INF/spring/applicationContext.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 public class EmployeeModelTest {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    private Employee testEmployee;
+
+    @Before
+    public void createEmployeeData() {
+        testEmployee = new Employee();
+        testEmployee.setFirstName("Joe");
+        testEmployee.setLastName("Smith");
+        entityManager.persist(testEmployee);
+        for (int i = 0; i < 10; i++) {
+            Review r = new Review();
+            r.setReview("This was the worst.  " + i);
+            testEmployee.addReview(r);
+        }
+        entityManager.flush();
+    }
+
     @Test
-    @Transactional
-    public void tryOutEmployee() {
+    public void checkBeforeEmployeeCreated() {
+        assertNotNull(testEmployee.getId());
+    }
+    
+    @Test
+    public void modifyReviewOfEmployee() {
+        Review review = (Review) entityManager.createQuery("select r from Review r").getResultList().get(0);
+        review.setReview("lkajsdflkasjdflkasjdf");
+        review.getEmployee().setFirstName("Phil");
 
-        Employee e = new Employee();
-        e.setFirstName("Joe");
-        e.setLastName("Banks");
-        entityManager.persist(e);
+        System.err.println(entityManager.getDelegate());
 
-        assertThat(e.getId(), notNullValue());
-        
-        entityManager.clear();
-
-        Employee e2 = entityManager.find(
-                Employee.class, e.getId());
-
-        assertThat(e2.getId(), notNullValue());
-        assertThat(e2, not(e));
+        entityManager.merge(review);
+        System.err.println("==== after merge ====");
+        System.err.println(entityManager.getDelegate());
+        entityManager.flush();
     }
 }
